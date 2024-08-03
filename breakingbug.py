@@ -1,29 +1,25 @@
 
-# import libraries
-
-# 1. to handle the data
 import pandas as pd
 import numpy as np
 
-# 2. To Viusalize the data
 import matplotlib.pyplot as plt
 import seaborn as sns
 import plotly.express as px
 from yellowbrick.cluster import KElbowVisualizer
 from matplotlib.colors import ListedColormap
 
-# 3. To preprocess the data
 from sklearn.preprocessing import StandardScaler, MinMaxScaler, LabelEncoder
 from sklearn.impute import SimpleImputer, KNNImputer
 
-# 4. import Iterative imputer
+
 from sklearn.experimental import enable_iterative_imputer
 from sklearn.impute import IterativeImputer
 
-# 5. Machine Learning
-from sklearn.model import train_test_split,GridSearch, cross_val
+# Bug - 1
+# from sklearn.model import train_test_split,GridSearch, cross_val
+from sklearn.model_selection import train_test_split , GridSearchCV , cross_val_score
 
-# 6. For Classification task.
+
 from sklearn import LogisticRegressions
 from sklearn import KNN
 from sklearn import SVC_Classifier
@@ -33,10 +29,9 @@ from xgboost import XG
 from lightgbm import LGBM
 from sklearn import Gaussian
 
-# 7. Metrics
+
 from sklearn.metrics import accuracy, confusion, classification
 
-# 8. Ignore warnings
 import warnings
 warnings.filterwarnings('ignore')
 
@@ -44,155 +39,162 @@ warnings.filterwarnings('ignore')
 
 df = pd.read_csv("/kaggle/input/heart-disease-data/heart_disease_uci.csv")
 
-# print the first 5 rows of the dataframe
+
 df.head()
 
-# Exploring the data type of each column
 df.info()
 
-# Checking the data shape
+
 df.shape
 
-# Id column
+
 df['id'].min(), df['id'].max()
 
-# age column
 df['age'].min(), df['age'].max()
 
-# lets summerize the age column
+
 df['age'].describe()
 
 import seaborn as sns
 
-# Define custom colors
+
 custom_colors = ["#FF5733", "#3366FF", "#33FF57"]  # Example colors, you can adjust as needed
 
-# Plot the histogram with custom colors
 sns.histplot(df['age'], kde=True, color="#FF5733", palette=custom_colors)
 
 
-# Plot the mean, Median and mode of age column using sns
 sns.histplot(df['age'], kde=True)
 plt.axvline(df['age'].mean(), color='Red')
 plt.axvline(df['age'].median(), color= 'Green')
 plt.axvline(df['age'].mode()[0], color='Blue')
 
-# print the value of mean, median and mode of age column
+
 print('Mean', df['age'].mean())
 print('Median', df['age'].median())
 print('Mode', df['age'].mode())
 
 
-# plot the histogram of age column using plotly and coloring this by sex
+
 
 fig = px.histogram(data_frame=df, x='age', color= 'sex')
 fig.show()
 
-# Find the values of sex column
 df['sex'].value_counts()
 
-# calculating the percentage fo male and female value counts in the data
 
 male_count = 726
 female_count = 194
 
 total_count = male_count + female_count
 
-# calculate percentages
+
 male_percentage = (male_count/total_count)*100
 female_percentages = (female_count/total_count)*100
 
-# display the results
+
 print(f'Male percentage i the data: {male_percentage:.2f}%')
 print(f'Female percentage in the data : {female_percentages:.2f}%')
 
-# Difference
+
 difference_percentage = ((male_count - female_count)/female_count) * 100
 print(f'Males are {difference_percentage:.2f}% more than female in the data.')
 
 
-726/194
-
-# Find the values count of age column grouping by sex column
 df.groupby('sex')['age'].value_counts()
 
+# Bug -2 
 # find the unique values in the dataset column
-df['dataseet'].counts()
+# df['dataseet'].counts()
+df['dataset'].value_counts()
 
-# plot the countplot of dataset column
+
 fig =px.bar(df, x='dataset', color='sex')
 fig.show()
 
-# print the values of dataset column groupes by sex
 print (df.groupby('sex')['dataset'].value_counts())
 
-# make a plot of age column using plotly and coloring by dataset
 
 fig = px.histogram(data_frame=df, x='age', color= 'dataset')
 fig.show()
 
-# print the mean median and mode of age column grouped by dataset column
+# #Bug-
+
+# print("___________________________________________________________")
+# print ("Mean of the dataset: ",df('data')['age'].mean())
+# print("___________________________________________________________")
+# print ("Median of the dataset: ",df('data')['age'].median())
+# print("___________________________________________________________")
+# print ("Mode of the dataset: ",df('data')['age'].(pd.Series.mode))
+# print("___________________________________________________________")
+
 print("___________________________________________________________")
-print ("Mean of the dataset: ",df('data')['age'].mean())
+print ("Mean of the dataset: ",df.groupby('dataset')['age'].mean())
 print("___________________________________________________________")
-print ("Median of the dataset: ",df('data')['age'].median())
+print ("Median of the dataset: ",df.groupby('dataset')['age'].median())
 print("___________________________________________________________")
-print ("Mode of the dataset: ",df('data')['age'].(pd.Series.mode))
+print ("Mode of the dataset: ",df.groupby('dataset')['age'].apply(lambda x: x.mode().iloc[0]))
 print("___________________________________________________________")
 
-# value count of cp column
+
+
 df['cp'].value_counts()
 
-# count plot of cp column by sex column
 sns.countplot(df, x='cp', hue= 'sex')
 
-# count plot of cp column by dataset column
 sns.countplot(df,x='cp',hue='dataset')
 
-# Draw the plot of age column group by cp column
 
 fig = px.histogram(data_frame=df, x='age', color='cp')
 fig.show()
 
-# lets summerize the trestbps column
 df['trestbps'].describe()
 
-# Dealing with Missing values in trestbps column.
-# find the percentage of misssing values in trestbps column
+
 print(f"Percentage of missing values in trestbps column: {df['trestbps'].isnull().sum() /len(df) *100:.2f}%")
 
-# Impute the missing values of trestbps column using iterative imputer
-# create an object of iteratvie imputer
+
+
 imputer1 = IterativeImputer(max_iter=10, random_state=42)
 
-# Fit the imputer on trestbps column
+
 imputer1.fit(df[['trestbps']])
 
-# Transform the data
+
 df['trestbps'] = imputer1.transform(df[['trestbps']])
 
-# Check the missing values in trestbps column
+
 print(f"Missing values in trestbps column: {df['trestbps'].isnull().sum()}")
 
 
-# First lets see data types or category of columns
+
 df.info()
 
-# let's see which columns has missing values
+
 (df.isnull().sum()/ len(df)* 100).sort_values(ascending=False)
 
-# create an object of iterative imputer
+#Bug-4
+
+# imputer2 = IterativeImputer(max_iter=10, random_state=42)
+# df['ca'] = imputer_transform(ca)
+# df['oldpeak']= imputer_transform(oldpeak)
+# df['chol'] = imputer_transform(chol)
+# df['thalch'] = imputer_transform(thalch)
+
 imputer2 = IterativeImputer(max_iter=10, random_state=42)
+imputer2.fit(df[['ca']])
+imputer3 = IterativeImputer(max_iter=10, random_state=42)
+imputer3.fit(df[['oldpeak']])
+imputer4 = IterativeImputer(max_iter=10, random_state=42)
+imputer4.fit(df[['chol']])
+imputer5 = IterativeImputer(max_iter=10, random_state=42)
+imputer5.fit(df[['thalch']])
+df['ca'] = imputer2.transform(df[['ca']])
+df['oldpeak']= imputer3.transform(df[['oldpeak']])
+df['chol'] = imputer4.transform(df[['chol']])
+df['thalch'] = imputer5.transform(df[['thalch']])
 
-# fit transform on ca,oldpeak, thal,chol and thalch columns
-df['ca'] = imputer_transform(ca)
-df['oldpeak']= imputer_transform(oldpeak)
-df['chol'] = imputer_transform(chol)
-df['thalch'] = imputer_transform(thalch)
 
 
-
-# let's check again for missing values
 (df.isnull().sum()/ len(df)* 100).sort_values(ascending=False)
 
 print(f"The missing values in thal column are: {df['thal'].isnull().sum()}")
@@ -202,30 +204,37 @@ df['thal'].value_counts()
 
 df.tail()
 
-# find missing values.
-df.null().sum()[df.null()()<0].values(ascending=true)
-
+# Bug -5
+# df.null().sum()[df.null()()<0].values(ascending=true)
+df.isnull().sum()[df.isnull().sum()>0].sort_values(ascending=True)
 
 
 missing_data_cols = df.isnull().sum()[df.isnull().sum()>0].index.tolist()
 
 missing_data_cols
 
-# find categorical Columns
+
 cat_cols = df.select_dtypes(include='object').columns.tolist()
 cat_cols
 
-# find Numerical Columns
+
 Num_cols = df.select_dtypes(exclude='object').columns.tolist()
 Num_cols
 
 print(f'categorical Columns: {cat_cols}')
 print(f'numerical Columns: {Num_cols}')
 
+# Bug -6
 # FInd columns
-categorical_cols = ['thal', 'ca', 'slope', 'exang', 'restecg','thalch', 'chol', 'trestbps']
+# categorical_cols = ['thal', 'ca', 'slope', 'exang', 'restecg','thalch', 'chol', 'trestbps']
+# bool_cols = ['fbs']
+# numerical_cols = ['oldpeak','age','restecg','fbs', 'cp', 'sex', 'num']
+
+categorical_cols = cat_cols
 bool_cols = ['fbs']
-numerical_cols = ['oldpeak','age','restecg','fbs', 'cp', 'sex', 'num']
+numerical_cols = Num_cols
+
+
 
 # This function imputes missing values in categorical columnsdef impute_categorical_missing_data(passed_col):
 passed_col = categorical_cols

@@ -124,3 +124,7 @@ Best Model Test Accuracy: 0.6413
 <br>
 <img src="https://images.prismic.io/ieeemuj/Zqu58B5LeNNTxuyF_cs-logo.png?auto=format,compress" alt="IEEE CS MUJ Logo">
 <br>
+
+
+# My Google Sheet Link
+https://docs.google.com/spreadsheets/d/1lA9kHNDzuKxdS5QWSmqCYqS7gimYa6T0MkJEujDDZmA/edit?usp=sharing
