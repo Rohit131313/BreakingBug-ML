@@ -16,21 +16,17 @@ from sklearn.experimental import enable_iterative_imputer
 from sklearn.impute import IterativeImputer
 
 # Bug - 1
-# from sklearn.model import train_test_split,GridSearch, cross_val
 from sklearn.model_selection import train_test_split , GridSearchCV , cross_val_score
+from sklearn.linear_model import LogisticRegression
+from sklearn.neighbors import KNeighborsClassifier
+from sklearn.svm import SVC
+from sklearn.tree import DecisionTreeClassifier, plot_tree
+from sklearn.ensemble import RandomForestRegressor, AdaBoostClassifier, GradientBoostingClassifier,RandomForestClassifier
+from xgboost import XGBClassifier
+from lightgbm import LGBMClassifier
+from sklearn.gaussian_process import GaussianProcessClassifier
+from sklearn.metrics import accuracy_score, confusion_matrix, classification_report
 
-
-from sklearn import LogisticRegressions
-from sklearn import KNN
-from sklearn import SVC_Classifier
-from sklearn import DecisionTree, plot_tree_regressor
-from sklearn import RandomForestRegressor, AdaBoost, GradientBoost
-from xgboost import XG
-from lightgbm import LGBM
-from sklearn import Gaussian
-
-
-from sklearn.metrics import accuracy, confusion, classification
 
 import warnings
 warnings.filterwarnings('ignore')
